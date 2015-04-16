@@ -1,5 +1,6 @@
 require 'jpstock'
 require 'ansi'
+require 'mechanize'
 
 module Yaoya
   class Check
@@ -9,29 +10,33 @@ module Yaoya
       options.add_option_c
       options.parse
 
-      $config  = load_config(options.val(:config_path))
+      @config  = load_config(options.val(:config_path))
 
-      brands = get_brands_by_yaml
+      #puts "########################################################"
+      #puts "# Yahoo"
+      #puts "########################################################"
+      #get_brands_by_yahoo.each do |b|
+      #  puts "#{b[:name]}(#{b[:code]}):".mb_ljust(20) + "#{b[:current_price]}".ljust(10) + "(#{disp_profit(b[:profit])})" 
+      #end
 
-      brands.each do |brand|
-        stock_info = JpStock.price(:code => brand[:code])
-        diff = diff_disp(stock_info.close - brand[:price]) unless brand[:price].nil?
-        puts "Code #{brand[:code]}: @#{stock_info.close} (#{diff})"
+      puts "########################################################"
+      puts "# SBI"
+      puts "########################################################"
+      puts "".mb_ljust(20) + "現在価格".mb_ljust(10) + "TOTAL収支"
+      get_brands_by_sbi.each do |b|
+        puts "#{b[:name]}(#{b[:code]}):".mb_ljust(20) + "#{b[:current_price]}".ljust(10) + "#{disp_profit(b[:profit])}" 
       end
     end
 
-    def get_brands_by_yaml
-      $config[:brands]
+    def get_brands_by_yahoo
+      my_yahoo = MyYahoo.new(@config)
+      my_yahoo.get_brands
     end
 
     def get_brands_by_sbi
-      $config[:brands]
-    end
-
-    def diff_disp(diff)
-      return ANSI.green{ "+ #{diff.round(3)}" }     if diff > 0
-      return ANSI.red  { "- #{diff.abs.round(3)}" } if diff < 0
-      return 0
+      my_sbi = MySBI.new(@config)
+      my_sbi.login
+      my_sbi.get_brands
     end
   end
 end
