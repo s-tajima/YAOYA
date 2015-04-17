@@ -12,6 +12,25 @@ module Yaoya
       end
     end
 
+    def add_option_code
+      @opt_parser.on('-C val', '--code=val', 'stock code.') do |v| 
+        @options[:code] = v 
+      end
+    end
+
+    def add_option_q
+      @opt_parser.on('-q val', '--quantity=val', 'quantity.') do |v| 
+        @options[:quantity] = v 
+      end
+    end
+
+    def add_option_p
+      @opt_parser.on('-p val', '--price=val', 'price.') do |v| 
+        @options[:price] = v 
+      end
+    end
+
+
     def parse
       @opt_parser.parse!(@args)
     end

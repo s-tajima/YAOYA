@@ -31,7 +31,7 @@ module Yaoya
 
       puts "".mb_ljust(20) + 
            "現在価格".mb_ljust(12) + 
-           "XX分前比".mb_ljust(11) +
+           "前回比".mb_ljust(11) +
            "前日比"
 
       brands.each do |b|

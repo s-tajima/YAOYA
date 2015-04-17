@@ -8,14 +8,21 @@ module Yaoya
 
       options = MyOptionParser.new(args)
       options.add_option_c
+      options.add_option_code
+      options.add_option_p
+      options.add_option_q
       options.parse
 
       @config  = load_config(options.val(:config_path))
 
+      code     = options.val(:code)
+      quantity = options.val(:quantity)
+      price    = options.val(:price)
+
       my_sbi = MySBI.new(@config)
       my_sbi.login
-      my_sbi.buy_stock
 
+      puts my_sbi.buy_stock(code, quantity, price)
     end
   end
 end
