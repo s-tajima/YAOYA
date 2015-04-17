@@ -31,7 +31,7 @@ module Yaoya
 
       puts "".mb_ljust(20) + 
            "現在価格".mb_ljust(12) + 
-           "前回比".mb_ljust(11) +
+           "前回比".mb_ljust(24) +
            "前日比"
 
       brands.each do |b|
@@ -53,8 +53,10 @@ module Yaoya
 
         message = "#{b[:name]}(#{b[:code]}):".mb_ljust(20) + 
                   "#{b[:current_price]}".mb_ljust(12) + 
-                  "#{disp_profit(p_diff_rate)} ".mb_ljust(20) +
-                  "#{disp_profit(y_diff_rate)} ".mb_ljust(20)
+                  disp_profit(p_diff).mb_ljust(18) +
+                  "(#{disp_profit(p_diff_rate, "", "%")})".mb_ljust(24) +
+                  disp_profit(y_diff).mb_ljust(18) +
+                  "(#{disp_profit(y_diff_rate, "", "%")})"
 
         puts message
       end
