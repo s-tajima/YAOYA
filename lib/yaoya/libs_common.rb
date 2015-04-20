@@ -4,7 +4,7 @@ require 'optparse'
 
 module Yaoya
   def load_config(config_file)
-    config_file = "#{$BASE_DIR}config/default.yml" if config_file.nil?
+    config_file = "#{$BASE_DIR}configs/default.yml" if config_file.nil?
     YAML.load(File.open(config_file))
   end
 
