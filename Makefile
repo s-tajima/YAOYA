@@ -1,3 +1,5 @@
 check:
-	bundle exec bin/check -c configs/default.yml
+	bundle exec bin/check
 
+diff:
+	bundle exec bin/diff

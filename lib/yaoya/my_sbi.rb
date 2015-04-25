@@ -38,7 +38,7 @@ module Yaoya
       puts "price:    #{price}円"
 
       return ANSI.red { "Invalid quantity." }        if quantity.to_i % 100 != 0 && quantity.to_i > 10
-      return ANSI.red { "Too too expensive price." } if quantity.to_i * price.to_i > 50000
+      return ANSI.red { "Too too expensive price." } if quantity.to_i * price.to_i > 100000
 
       page = @agent.get("/bsite/member/stock/buyOrderEntry.do?ipm_product_code=#{code}&market=TKY")
       form = page.form do |f|
@@ -59,6 +59,16 @@ module Yaoya
 
       return ANSI.red   { "Order failed."    } if result.empty?
       return ANSI.green { "Order succeeded." }
+    end
+
+    def get_portfolio
+      page   = @agent.get("https://k.sbisec.co.jp/bsite/member/portfolio/registeredStockList.do")
+      tables = page.at('//table//table[5]//table').search('tr')
+
+      tables.each_slice(2) do |header, data|
+        header.to_s.scan(/<a.*>(.*)<\/a>/).flatten[0]
+        data.to_s.scan(/<font.*>(.*)<\/font>/).flatten[1]
+      end
     end
   end
 end

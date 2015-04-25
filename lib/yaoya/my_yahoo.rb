@@ -15,6 +15,7 @@ module Yaoya
         else
           stock_info = JpStock.historical_prices(:code => brand[:code], :start_date => date, :end_date => date).first
         end
+        return [] unless stock_info.respond_to?('close')
 
         brand[:current_price] = stock_info.close
         brand[:profit]        = ( brand[:current_price] - brand[:owned_price] ) * brand[:owned_num] unless brand[:owned_price].nil?

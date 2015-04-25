@@ -28,9 +28,10 @@ module Yaoya
 
       brands      = MyYahoo.new(@config).get_brands
       yday_brands = MyYahoo.new(@config).get_brands( Date.today - 1 )
+      yday_brands = MyYahoo.new(@config).get_brands( Date.today - 3 ) if yday_brands.empty?
 
-      puts "".mb_ljust(20) + 
-           "現在価格".mb_ljust(12) + 
+      puts "".mb_ljust(30) +
+           "現在価格".mb_ljust(12) +
            "前回比".mb_ljust(24) +
            "前日比"
 
@@ -45,14 +46,14 @@ module Yaoya
         y_diff      = b[:current_price] - yb[:current_price]
         y_diff_rate = (( y_diff / yb[:current_price] ) * 100 ).round(2)
 
-        message = "#{b[:name]}(#{b[:code]}):" + 
+        message = "#{b[:name]}(#{b[:code]}):" +
                   "#{pb[:current_price]}" + " -> " + "#{b[:current_price]}" +
                   " (+ #{p_diff}円)"
 
         my_twitter.send_dm("#{current_time} #{message}") if p_diff_rate > 5 && y_diff > 0
 
-        message = "#{b[:name]}(#{b[:code]}):".mb_ljust(20) + 
-                  "#{b[:current_price]}".mb_ljust(12) + 
+        message = "#{b[:name]}(#{b[:code]}):".mb_ljust(30) +
+                  "#{b[:current_price]}".mb_ljust(12) +
                   disp_profit(p_diff).mb_ljust(18) +
                   "(#{disp_profit(p_diff_rate, "", "%")})".mb_ljust(24) +
                   disp_profit(y_diff).mb_ljust(18) +
