@@ -13,6 +13,8 @@ GEM
       addressable (>= 2.3.1)
       extlib (>= 0.9.15)
       multi_json (>= 1.0.0)
+    bigquery (0.7.0)
+      google-api-client (~> 0.8.2)
     buftok (0.2.0)
     diff-lcs (1.2.5)
     domain_name (0.5.23)
@@ -126,6 +128,7 @@ PLATFORMS
 
 DEPENDENCIES
   ansi
+  bigquery
   google-api-client
   jpstock
   json

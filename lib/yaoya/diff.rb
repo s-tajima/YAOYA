@@ -5,7 +5,6 @@ require 'mechanize'
 module Yaoya
   class Diff
     def initialize(args)
-
       options = MyOptionParser.new(args)
       options.add_option_c
       options.parse
@@ -25,10 +24,10 @@ module Yaoya
       puts "# Yahoo (差分情報: #{current_time})"
       puts "########################################################"
 
+      my_sbi = MySBI.new(@config)
+      my_sbi.login
 
-      brands      = MyYahoo.new(@config).get_brands
-      yday_brands = MyYahoo.new(@config).get_brands( Date.today - 1 )
-      yday_brands = MyYahoo.new(@config).get_brands( Date.today - 3 ) if yday_brands.empty?
+      brands = my_sbi.get_portfolio
 
       puts "".mb_ljust(30) +
            "現在価格".mb_ljust(12) +
@@ -37,27 +36,23 @@ module Yaoya
 
       brands.each do |b|
         pb =  prev_brands.find { |i| i[:code] == b[:code] }
-        yb =  yday_brands.find { |i| i[:code] == b[:code] }
         next if pb.nil?
 
         p_diff      = b[:current_price] - pb[:current_price]
         p_diff_rate = (( p_diff / pb[:current_price] ) * 100 ).round(2)
 
-        y_diff      = b[:current_price] - yb[:current_price]
-        y_diff_rate = (( y_diff / yb[:current_price] ) * 100 ).round(2)
-
         message = "#{b[:name]}(#{b[:code]}):" +
                   "#{pb[:current_price]}" + " -> " + "#{b[:current_price]}" +
                   " (+ #{p_diff}円)"
 
-        my_twitter.send_dm("#{current_time} #{message}") if p_diff_rate > 5 && y_diff > 0
+        my_twitter.send_dm("#{current_time} #{message}") if p_diff_rate > 5
 
         message = "#{b[:name]}(#{b[:code]}):".mb_ljust(30) +
                   "#{b[:current_price]}".mb_ljust(12) +
                   disp_profit(p_diff).mb_ljust(18) +
                   "(#{disp_profit(p_diff_rate, "", "%")})".mb_ljust(24) +
-                  disp_profit(y_diff).mb_ljust(18) +
-                  "(#{disp_profit(y_diff_rate, "", "%")})"
+                  disp_profit(b[:yday_diff]).mb_ljust(18) +
+                  "(#{disp_profit(b[:yday_diff_rate], "", "%")})"
 
         puts message
       end

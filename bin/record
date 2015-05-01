@@ -1,0 +1,10 @@
+#!/usr/bin/ruby
+
+$: << File.expand_path('../../lib', __FILE__)
+require 'yaoya'
+
+include Yaoya
+Record.new(ARGV)
+
+
+
