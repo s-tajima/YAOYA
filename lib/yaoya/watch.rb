@@ -1,9 +1,5 @@
-require 'jpstock'
-require 'ansi'
-require 'mechanize'
-
 module Yaoya
-  class Diff
+  class Watch
     RATE_CRITERIA = 3
 
     def initialize(args)
@@ -13,7 +9,7 @@ module Yaoya
 
       @config  = load_config(options.val(:config_path))
 
-      tempfile_path = '/tmp/yaoya_diff.json'
+      tempfile_path = '/tmp/yaoya_watch.json'
 
       FileUtils.touch(tempfile_path)
       json        = open(tempfile_path) { |io| JSON.load(io) }
@@ -34,7 +30,8 @@ module Yaoya
       puts "".mb_ljust(30) +
            "現在価格".mb_ljust(12) +
            "前回比".mb_ljust(24) +
-           "前日比"
+           "前日比".mb_ljust(24) +
+           "出来高"
 
       brands.each do |b|
         pb =  prev_brands.find { |i| i[:code] == b[:code] }
@@ -64,7 +61,8 @@ module Yaoya
                   disp_profit(p_diff).mb_ljust(18) +
                   "(#{disp_profit(p_diff_rate, "", "%")})".mb_ljust(24) +
                   disp_profit(b[:yday_diff]).mb_ljust(18) +
-                  "(#{disp_profit(b[:yday_diff_rate], "", "%")})"
+                  "(#{disp_profit(b[:yday_diff_rate], "", "%")})".mb_ljust(24) +
+                  "#{b[:volume]}"
 
         puts message
       end

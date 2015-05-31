@@ -36,24 +36,28 @@ module Yaoya
     end
 
     def get_portfolio
-      page   = @agent.get("https://k.sbisec.co.jp/bsite/member/portfolio/registeredStockList.do")
-      tables = page.at('//table//table[5]//table').search('tr')
-
       brands = Array.new
 
-      tables.each_slice(2) do |header, data|
-        brand = Hash.new
+      [0, 1].product([0, 1]).each do |l, p|
+        page   = @agent.get("https://k.sbisec.co.jp/bsite/member/portfolio/registeredStockList.do?list_number=#{l}&page=#{p}")
+        tables = page.at('//table//table[5]//table').search('tr')
 
-        brand[:code], brand[:name] = header.to_s.scan(/<td .*?>(\d+).*<a .*?>(.*)<\/a>.*<\/td>/).flatten
+        tables.each_slice(2) do |header, data|
+          brand = Hash.new
 
-        prices = data.to_s.scan(/<font.*?>(.*)<\/font>/)
-        brand[:current_price]  = prices.flatten[1].gsub(/,/,"").to_f || 0.0
-        brand[:yday_diff]      = prices.flatten[3].gsub(/,/,"").to_f || 0.0
-        brand[:yday_price]     = brand[:current_price] + brand[:yday_diff]
-        brand[:yday_diff_rate] = ((brand[:yday_diff] / brand[:yday_price]) * 100 ).round(2)
+          brand[:code], brand[:name] = header.to_s.scan(/<td .*?>(\d+).*<a .*?>(.*)<\/a>.*<\/td>/).flatten
 
-        brands << brand
+          prices = data.to_s.scan(/<td.*?>(?:<font .*?>)?(.*)\s*(?:<\/font>)?<\/td>/)
+          brand[:current_price]  = prices.flatten[1].gsub(/,/,"").to_f || 0.0
+          brand[:yday_diff]      = prices.flatten[3].gsub(/,/,"").to_f || 0.0
+          brand[:yday_price]     = brand[:current_price] + brand[:yday_diff]
+          brand[:yday_diff_rate] = ((brand[:yday_diff] / brand[:yday_price]) * 100 ).round(2)
+
+          brands << brand
+        end
+        sleep 1
       end
+
       brands 
     end
 

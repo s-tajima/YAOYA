@@ -81,6 +81,7 @@ GEM
       mini_portile (~> 0.6.0)
     ntlm-http (0.1.1)
     power_assert (0.2.3)
+    redis (3.2.1)
     retriable (1.4.1)
     rspec (3.2.0)
       rspec-core (~> 3.2.0)
@@ -133,6 +134,7 @@ DEPENDENCIES
   jpstock
   json
   mechanize
+  redis
   rspec
   test-unit
   twitter
